@@ -2,6 +2,7 @@ package main
 
 import (
 	"encoding/json"
+	"flag"
 	"fmt"
 	"net/http"
 	"strconv"
@@ -98,6 +99,9 @@ func createUserHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func main() {
+	port := flag.Int("port", 8080, "Port number to listen on")
+	flag.Parse()
+
 	mux := http.NewServeMux()
 
 	mux.HandleFunc("/", helloHandler)
@@ -122,9 +126,10 @@ func main() {
 
 	mux.HandleFunc("/users/", getUserHandler)
 
-	fmt.Println("Server listening on :8080")
+	addr := fmt.Sprintf(":%d", *port)
+	fmt.Printf("Server listening on %s\n", addr)
 
-	err := http.ListenAndServe(":8080", mux)
+	err := http.ListenAndServe(addr, mux)
 	if err != nil {
 		panic(err)
 	}
